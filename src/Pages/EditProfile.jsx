@@ -499,7 +499,7 @@ const EditProfile = () => {
 
                 {/* Skills - Compact Grid */}
 
-                <div className="grid grid-cols-5 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
                   {Array.from({ length: 5 }, (_, i) => (
                     <input
                       key={i}
@@ -508,9 +508,10 @@ const EditProfile = () => {
                       maxLength={15}
                       onChange={(e) => handleSkillChange(i, e.target.value)}
                       className="px-3 py-2 bg-white/10 border border-white/20 rounded-xl
-                 text-white placeholder-white/50 focus:outline-none
-                 focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                 backdrop-blur-sm transition-all duration-200 text-sm"
+          text-white placeholder-white/50 focus:outline-none
+          focus:ring-2 focus:ring-blue-500 focus:border-transparent
+          backdrop-blur-sm transition-all duration-200 text-sm
+          w-full min-w-0"
                       placeholder={`Skill ${i + 1}`}
                     />
                   ))}
@@ -551,7 +552,7 @@ const EditProfile = () => {
               </div>
 
               {/* Photo Grid - Compact squares */}
-              <div className="grid grid-cols-6 md:grid-cols-6 gap-4 mb-6">
+             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
                 {Array.from({ length: 6 }, (_, index) =>
                   renderImageSlot(index)
                 )}
