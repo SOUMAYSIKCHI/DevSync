@@ -4,7 +4,7 @@ import { createSocketConnection } from "../Utils/socket";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../Constants";
 import axios from "axios";
-
+import toast from "react-hot-toast";
 const Chat = () => {
   const { targetUserId } = useParams();
   const user = useSelector((state) => state.user);
@@ -47,6 +47,7 @@ const Chat = () => {
   useEffect(() => {
     if (!curr_userId) return;
     const socket = createSocketConnection();
+
     socket.on("connect", () => {
       socket.emit("joinChat", {
         curr_userId,
@@ -66,6 +67,19 @@ const Chat = () => {
         },
       ]);
     });
+
+      socket.on("connectionDenied", ({ reason }) => {
+        setMessages((prev) => [
+          ...prev,
+          {
+            from: "System",
+            senderId: "system",
+            text: reason,
+          },
+        ]);
+        toast.error(reason);
+      });
+    
 
     return () => {
       socket.disconnect();
@@ -95,7 +109,6 @@ const Chat = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-2 sm:p-4 lg:p-6">
       <div className="max-w-4xl mx-auto h-[calc(100vh-1rem)] sm:h-[calc(100vh-2rem)] lg:h-[calc(100vh-3rem)] flex flex-col bg-gray-800/90 backdrop-blur-lg rounded-2xl border border-gray-600/50 shadow-2xl overflow-hidden">
-        
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-900 to-gray-800 p-4 sm:p-6">
           <div className="flex items-center justify-between">
@@ -125,28 +138,35 @@ const Chat = () => {
               return (
                 <div
                   key={idx}
-                  className={`flex ${isCurrentUser ? "justify-end" : "justify-start"} mb-4`}
+                  className={`flex ${
+                    isCurrentUser ? "justify-end" : "justify-start"
+                  } mb-4`}
                 >
-                  <div className={`max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg ${isCurrentUser ? "order-2" : "order-1"}`}>
+                  <div
+                    className={`max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg ${
+                      isCurrentUser ? "order-2" : "order-1"
+                    }`}
+                  >
                     {/* User name */}
-                    <div className={`text-xs text-gray-300 mb-1 ${isCurrentUser ? "text-right" : "text-left"} px-3`}>
+                    <div
+                      className={`text-xs text-gray-300 mb-1 ${
+                        isCurrentUser ? "text-right" : "text-left"
+                      } px-3`}
+                    >
                       {isCurrentUser ? "You" : msg.from}
                     </div>
-                    
+
                     {/* Message bubble */}
                     <div
                       className="relative px-4 py-3 rounded-2xl shadow-lg 
                           bg-gray-700/80 backdrop-blur-sm text-white border border-gray-600/50 rounded-bl-md break-words"
                     >
                       {msg.text}
-                      
+
                       {/* Message tail */}
-                      <div
-                        className="absolute top-0 w-0 h-0 left-0 border-r-8 border-r-gray-700 border-t-8 border-t-transparent" ></div>
+                      <div className="absolute top-0 w-0 h-0 left-0 border-r-8 border-r-gray-700 border-t-8 border-t-transparent"></div>
                     </div>
                   </div>
-                  
-                 
                 </div>
               );
             })
@@ -172,10 +192,11 @@ const Chat = () => {
                 }}
                 onInput={(e) => {
                   e.target.style.height = "48px";
-                  e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
+                  e.target.style.height =
+                    Math.min(e.target.scrollHeight, 120) + "px";
                 }}
               />
-              
+
               {/* Character count */}
               {newMsg.length > 0 && (
                 <div className="absolute bottom-1 right-3 text-xs text-gray-400">
@@ -183,7 +204,7 @@ const Chat = () => {
                 </div>
               )}
             </div>
-            
+
             <button
               onClick={sendMessageBtn}
               disabled={!newMsg.trim()}
@@ -208,7 +229,7 @@ const Chat = () => {
               </svg>
             </button>
           </div>
-          
+
           <div className="mt-2 text-xs text-gray-400 text-center">
             Press Enter to send • Shift+Enter for new line
           </div>
