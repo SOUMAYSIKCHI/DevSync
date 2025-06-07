@@ -1,5 +1,5 @@
-// App.js
 import { Route, Routes } from "react-router-dom";
+import Chat from "./Pages/Chat";
 import Dashboard from "./Pages/Dashboard";
 import ProtectedRoute from "./Pages/ProtectedRoute";
 import Unkown from "./LandingPages/Unkown";
@@ -7,7 +7,8 @@ import Layout from "./Pages/Layout";
 import Home from "./LandingPages/Home";
 import EditProfile from "./Pages/EditProfile";
 import Connections from "./Pages/Connections";
-import Chat from "./Pages/Chat";
+
+
 function App() {
   return (
     <Routes>
