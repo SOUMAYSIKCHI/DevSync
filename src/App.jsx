@@ -5,11 +5,10 @@ import ProtectedRoute from "./Pages/ProtectedRoute";
 import Unkown from "./LandingPages/Unkown";
 import Layout from "./Pages/Layout";
 import Home from "./LandingPages/Home";
-import ProfileView from "./Pages/ProfileView";
 import EditProfile from "./Pages/EditProfile";
 import Connections from "./Pages/Connections";
+import Chat from "./Pages/chat";
 function App() {
-
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -24,7 +23,7 @@ function App() {
         <Route index element={<Dashboard />} />
         <Route path="editProfile" element={<EditProfile/>}/>
         <Route path="connections" element={<Connections/>}/>
-    
+        <Route path="chat/:targetUserId" element={<Chat/>}/>
       </Route>
 
       <Route path="*" element={<Unkown />} />
