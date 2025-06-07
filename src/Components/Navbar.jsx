@@ -45,9 +45,9 @@ const Navbar = () => {
     getReq();
   },[]);
 
-  const profilePic = useSelector(state=>state.user.avatarUrl)
-  const firstName = useSelector((state)=>state.user.firstName);
-  const reqLength = useSelector((state) => state.request.length);
+  const profilePic = useSelector(state=>state?.user?.avatarUrl)
+  const firstName = useSelector((state)=>state?.user?.firstName);
+  const reqLength = useSelector((state) => state?.request?.length);
 
 
   const logoutHandler = async () => {
@@ -70,12 +70,11 @@ const Navbar = () => {
   const editProfHandler = ()=>{
     navigate("/v1/editProfile")
   }
- 
+  const handleMessageButton = ()=>{
+    navigate("/v1/connections");
+  }
 
-  const connectionRequests = [
-    2,3,5
-  ];
-  const unreadCount = 3;
+ 
 
  
 
@@ -84,7 +83,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-4">
+          <div  onClick={()=>navigate("/v1")} className="flex cursor-pointer items-center space-x-4">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
                 <Code className="w-5 h-5 text-white" />
@@ -170,7 +169,7 @@ const Navbar = () => {
             </div>
 
             {/* Messages */}
-            <button  onClick={()=>toast.error("Releasing soon in version 2.0")} className="p-2 bg-gray-800 hover:bg-gray-700  cursor-pointer rounded-full transition-colors duration-200">
+            <button  onClick={handleMessageButton} className="p-2 bg-gray-800 hover:bg-gray-700  cursor-pointer rounded-full transition-colors duration-200">
               <MessageCircle className="w-5 h-5 text-gray-300" />
             </button>
 
