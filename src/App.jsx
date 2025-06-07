@@ -1,5 +1,5 @@
+// App.js
 import { Route, Routes } from "react-router-dom";
-import Chat from "./Pages/Chat";
 import Dashboard from "./Pages/Dashboard";
 import ProtectedRoute from "./Pages/ProtectedRoute";
 import Unkown from "./LandingPages/Unkown";
@@ -7,7 +7,7 @@ import Layout from "./Pages/Layout";
 import Home from "./LandingPages/Home";
 import EditProfile from "./Pages/EditProfile";
 import Connections from "./Pages/Connections";
-
+import Message from "./Pages/Message";
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
         <Route index element={<Dashboard />} />
         <Route path="editProfile" element={<EditProfile/>}/>
         <Route path="connections" element={<Connections/>}/>
-        <Route path="chat/:targetUserId" element={<Chat/>}/>
+        <Route path="chat/:targetUserId" element={<Message/>}/>
       </Route>
 
       <Route path="*" element={<Unkown />} />
