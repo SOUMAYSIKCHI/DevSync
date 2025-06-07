@@ -7,7 +7,7 @@ import Layout from "./Pages/Layout";
 import Home from "./LandingPages/Home";
 import EditProfile from "./Pages/EditProfile";
 import Connections from "./Pages/Connections";
-import Chat from "./Pages/chat";
+import Chat from "./Pages/Chat";
 function App() {
   return (
     <Routes>
