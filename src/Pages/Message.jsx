@@ -57,7 +57,7 @@ const Message = () => {
     });
 
     socket.on("messageReceived", ({ fromUser, text, fromUserId }) => {
-      console.log("message received from " + fromUser);
+      // console.log("message received from " + fromUser);
       setMessages((prevMessages) => [
         ...prevMessages,
         {
