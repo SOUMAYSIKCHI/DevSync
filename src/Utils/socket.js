@@ -1,9 +1,10 @@
-import { io } from "socket.io-client";
+import io from "socket.io-client";
+import { BASE_URL } from "../Constants";
 
 export const createSocketConnection = () => {
-    return io("https://devsync.co.in", {
-      path: "/api/socket.io",
-      withCredentials: true,
-      transports: ["websocket", "polling"],
-    });
+  if (location.hostname === "localhost") {
+    return io(BASE_URL);
+  } else {
+    return io("/", { path: "/api/socket.io" });
+  }
 };
