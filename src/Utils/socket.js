@@ -1,3 +1,5 @@
+import { io } from "socket.io-client";
+
 const baseSocketURL =
   location.hostname === "localhost"
     ? "http://localhost:3300"
