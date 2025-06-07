@@ -43,6 +43,14 @@ const Login = () => {
     setSignup(true);
     setOtp(false);
   };
+   const goBackHandler2 = ()=>{
+    // forgotPassOpt && !signup && !remDetails && !otp
+    setForgotPassOpt(true);
+    setSignup(false);
+    setRemDetails(false);
+    setOtp(false);
+    setError(false);
+  }
 
   //user login
   const loginHandler = async()=>{    
@@ -109,6 +117,7 @@ const Login = () => {
 
   //user reset pass :
   const resetPassHandler = async()=>{
+    setError("Check for OTP in Spam folder");
     if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
         formData.password)){
       setError("Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.");
@@ -155,7 +164,7 @@ const Login = () => {
         { withCredentials: true }
       );
       if (res.status === 200) {
-        toast.success("Check your email for the OTP.")
+        toast.success("Check your email for the OTP.{check spam folder for OTP}")
         setOtp(true);
         setError("");
       }
@@ -373,7 +382,7 @@ const Login = () => {
               </button>
               <p className="w-full text-center mt-4 font-bold text-xl">Or</p>
               <p
-                onClick={goBackHandler}
+                onClick={goBackHandler2}
                 className="text-center rounded-md cursor-pointer px-4 py-2  text-lg lg:text-xl md:text-xl w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-purple-700 hover:to-pink-700 mt-3"
               >
                 Go Back
