@@ -361,7 +361,7 @@ const Login = () => {
                 id="otp"
                 value={formData.otp}
                 onChange={formHandler}
-                placeholder="🔐 Enter the OTP sent to your email"
+                placeholder="🔐Enter the OTP sent to your email{Check Spam}"
               />      
               <input
                 className="mt-6 px-4 py-2 text-[20px] w-full rounded-sm bg-black opacity-90 border-2 border-gray-700"
