@@ -195,10 +195,10 @@ const EditProfile = () => {
       )
     );
 
-    // Add avatar file if exists
-    if (uploadFiles.avatarFile) {
-      formData.append("avatarFile", uploadFiles.avatarFile);
-    }
+    // // Add avatar file if exists
+    // if (uploadFiles.avatarFile) {
+    //   formData.append("avatarFile", uploadFiles.avatarFile);
+    // }
 
     // Add gallery files with specific names
     Object.entries(uploadFiles.galleryFiles).forEach(([index, file]) => {
