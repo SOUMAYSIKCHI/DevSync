@@ -18,6 +18,8 @@ import { BASE_URL } from "../Constants";
 import { addUser } from "../Utils/userSlice";
 
 const EditProfile = () => {
+  const MAX_FILE_SIZE_MB = 18;
+  const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const initialSkills =
@@ -81,6 +83,11 @@ const EditProfile = () => {
   // Fixed: Added missing handleAvatarUpload function
   const handleAvatarUpload = (e) => {
     const file = e.target.files[0];
+   if (file) {
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+      toast.error(`Avatar image size is ${(file.size / (1024 * 1024)).toFixed(2)} MB. It should be less than or equal to ${MAX_FILE_SIZE_MB} MB.`);
+      return; // reject large file
+    }
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setProfileData((prev) => ({
@@ -98,6 +105,10 @@ const EditProfile = () => {
   const handleGalleryImageUpload = (e, index) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+      toast.error(`Image size at position ${index + 1} is ${(file.size / (1024 * 1024)).toFixed(2)} MB. It should be less than or equal to ${MAX_FILE_SIZE_MB} MB.`);
+      return; // reject large file
+      }
       const imageUrl = URL.createObjectURL(file);
       setProfileData((prev) => {
         const newImages = [...prev.galleryUrls];
