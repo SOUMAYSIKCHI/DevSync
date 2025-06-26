@@ -26,13 +26,12 @@ const Connections = () => {
   const connectionRequests = useSelector((state) => state.request);
   const [activeTab, setActiveTab] = useState("friends");
   const [searchQuery, setSearchQuery] = useState("");
-  const [friends, setFriends] = useState([]);
-  // const [connectionRequests, setConnectionRequests] = useState(reqArray);
+  const friends =  useSelector((state) => state.connections);
 
   const getReq = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/user/request/received`, {
-          withCredentials: true,
+        withCredentials: true,
         });
         dispatch(addRequest(res.data));
       } catch (error) {
@@ -49,10 +48,9 @@ const Connections = () => {
         withCredentials: true,
       });
       dispatch(addConnections(res.data));
-      setFriends(res.data);
     } catch (error) {
+      console.log(error);
       toast.error("Error fetching connections");
-      // console.error(error);
     }
   };
 
@@ -75,10 +73,12 @@ const Connections = () => {
       console.error(error);
     }
   };
-
   
   const handleBackButton = ()=>{
     navigate("/v1");
+  }
+  const handleChatButton = (targetUserId)=>{
+    navigate(`/v1/chat/${targetUserId}`)
   }
 
   const getTime = (dateString) => {
@@ -227,7 +227,7 @@ const Connections = () => {
         <div className="relative flex-shrink-0">
           <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
             {friend.avatarUrl ? (
-              <img
+              <img 
                 src={friend.avatarUrl}
                 alt={friend.firstName}
                 className="w-full h-full object-cover rounded-xl sm:rounded-2xl"
@@ -251,6 +251,16 @@ const Connections = () => {
                 Connected {getTime(friend.connectionUpdatedAt)}
               </p>
             </div>
+            
+            {/* Message Button */}
+            <button onClick={()=>handleChatButton(friend._id)}
+              className="flex cursor-pointer items-center space-x-1 sm:space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-blue-200 text-xs sm:text-sm rounded-lg sm:rounded-xl font-medium border border-blue-500/30 hover:border-blue-500/50 transition-all duration-200"
+            >
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+              </svg>
+              <span className="hidden sm:inline">Message</span>
+            </button>
           </div>
 
           {/* About */}

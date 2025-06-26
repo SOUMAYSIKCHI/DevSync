@@ -11,7 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { removeFeed, resetFeed } from "../Utils/feedSlice";
+import { removeFeed } from "../Utils/feedSlice";
 import axios from "axios";
 import { BASE_URL } from "../Constants";
 import toast from "react-hot-toast";
@@ -23,6 +23,11 @@ const MainCard = ({ getFeed }) => {
 
   const [currentProfile, setCurrentProfile] = useState(users[0]);
 
+  useEffect(() => {
+    if (users.length > 0) {
+      setCurrentProfile(users[0]);
+    }
+  }, []);
   useEffect(() => {
     if (users.length > 0) {
       setCurrentProfile(users[0]);
@@ -67,7 +72,6 @@ const MainCard = ({ getFeed }) => {
     setFilteredGalleryUrls(filtered);
   }, [currentProfile]);
 
-  // Auto-slide effect
   useEffect(() => {
     if (filteredGalleryUrls.length > 1) {
       const interval = setInterval(() => {
@@ -80,7 +84,6 @@ const MainCard = ({ getFeed }) => {
     }
   }, [filteredGalleryUrls]);
 
-  // Reset image index when profile changes
   useEffect(() => {
     setCurrentImageIndex(0);
   }, [currentProfile]);
@@ -148,7 +151,6 @@ const MainCard = ({ getFeed }) => {
     }
   };
 
-  // Show loading or empty state if no current profile
   if (!currentProfile || (!hasMore && users.length === 0)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4">

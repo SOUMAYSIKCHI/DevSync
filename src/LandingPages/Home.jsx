@@ -47,7 +47,7 @@ const Home = () => {
           navigate("/v1");
         }
       } catch (err) {
-        // Do nothing, stay on landing page
+        console.log(err);
       }
     };
 

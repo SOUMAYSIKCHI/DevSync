@@ -18,6 +18,8 @@ import { BASE_URL } from "../Constants";
 import { addUser } from "../Utils/userSlice";
 
 const EditProfile = () => {
+  const MAX_FILE_SIZE_MB = 18;
+  const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const initialSkills =
@@ -81,7 +83,12 @@ const EditProfile = () => {
   // Fixed: Added missing handleAvatarUpload function
   const handleAvatarUpload = (e) => {
     const file = e.target.files[0];
+
     if (file) {
+       if (file.size > MAX_FILE_SIZE_BYTES) {
+          toast.error(`Avatar image size is ${(file.size / (1024 * 1024)).toFixed(2)} MB. It should be less than or equal to ${MAX_FILE_SIZE_MB} MB.`);
+          return;
+       }
       const imageUrl = URL.createObjectURL(file);
       setProfileData((prev) => ({
         ...prev,
@@ -98,6 +105,10 @@ const EditProfile = () => {
   const handleGalleryImageUpload = (e, index) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        toast.error(`Image size at position ${index + 1} is ${(file.size / (1024 * 1024)).toFixed(2)} MB. It should be less than or equal to ${MAX_FILE_SIZE_MB} MB.`);
+        return; // reject large file
+      }
       const imageUrl = URL.createObjectURL(file);
       setProfileData((prev) => {
         const newImages = [...prev.galleryUrls];
@@ -195,10 +206,10 @@ const EditProfile = () => {
       )
     );
 
-    // Add avatar file if exists
-    if (uploadFiles.avatarFile) {
-      formData.append("avatarFile", uploadFiles.avatarFile);
-    }
+    // // Add avatar file if exists
+    // if (uploadFiles.avatarFile) {
+    //   formData.append("avatarFile", uploadFiles.avatarFile);
+    // }
 
     // Add gallery files with specific names
     Object.entries(uploadFiles.galleryFiles).forEach(([index, file]) => {
@@ -499,7 +510,7 @@ const EditProfile = () => {
 
                 {/* Skills - Compact Grid */}
 
-                <div className="grid grid-cols-5 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
                   {Array.from({ length: 5 }, (_, i) => (
                     <input
                       key={i}
@@ -508,9 +519,10 @@ const EditProfile = () => {
                       maxLength={15}
                       onChange={(e) => handleSkillChange(i, e.target.value)}
                       className="px-3 py-2 bg-white/10 border border-white/20 rounded-xl
-                 text-white placeholder-white/50 focus:outline-none
-                 focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                 backdrop-blur-sm transition-all duration-200 text-sm"
+          text-white placeholder-white/50 focus:outline-none
+          focus:ring-2 focus:ring-blue-500 focus:border-transparent
+          backdrop-blur-sm transition-all duration-200 text-sm
+          w-full min-w-0"
                       placeholder={`Skill ${i + 1}`}
                     />
                   ))}
@@ -551,7 +563,7 @@ const EditProfile = () => {
               </div>
 
               {/* Photo Grid - Compact squares */}
-              <div className="grid grid-cols-6 md:grid-cols-6 gap-4 mb-6">
+             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
                 {Array.from({ length: 6 }, (_, index) =>
                   renderImageSlot(index)
                 )}

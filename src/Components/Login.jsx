@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../Utils/userSlice";
 import { BASE_URL } from "../Constants";
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -14,6 +15,12 @@ const Login = () => {
   const [remDetails, setRemDetails] = useState(false);
   const [forgotPassOpt,setForgotPassOpt] = useState(false);
   const [resetPassOpt,setResetPassOpt] = useState(false);
+  
+  // Password visibility states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  
   const [formData, setformData] = useState({
     firstName: "",
     lastName: "",
@@ -22,7 +29,6 @@ const Login = () => {
     cnfrmPassword:"",
     otp: "",
   });
-
 
   function formHandler(e) {
     setError("");
@@ -38,11 +44,38 @@ const Login = () => {
   function submitHandler(e) {
     e.preventDefault();
   }
+  
   const goBackHandler = () => {
     setError("");
     setSignup(true);
     setOtp(false);
   };
+   
+  const goBackHandler2 = ()=>{
+    // forgotPassOpt && !signup && !remDetails && !otp
+    setForgotPassOpt(true);
+    setSignup(false);
+    setRemDetails(false);
+    setOtp(false);
+    setError(false);
+  }
+
+  // Eye icon SVG components
+  const EyeIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2" fill="none"/>
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" fill="none"/>
+    </svg>
+  );
+
+  const EyeOffIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="m1 1 22 22" stroke="currentColor" strokeWidth="2"/>
+      <path d="M6.71 6.71C4.35 8.5 2.62 10.89 2 12c1.46 2.61 4.13 5.1 7.36 6.29" stroke="currentColor" strokeWidth="2" fill="none"/>
+      <path d="m10 10-0.24 1a3 3 0 0 0 4.24 4.24l1-0.24" stroke="currentColor" strokeWidth="2" fill="none"/>
+      <path d="M14.12 14.12c2.36-1.79 4.09-4.18 4.71-5.83-1.46-2.61-4.13-5.1-7.36-6.29" stroke="currentColor" strokeWidth="2" fill="none"/>
+    </svg>
+  );
 
   //user login
   const loginHandler = async()=>{    
@@ -69,7 +102,7 @@ const Login = () => {
       if (res.status === 200) {
         dispatch(addUser(res.data.user));
         toast.success("Login success.")
-        navigate("/v1"); 
+        navigate("/v1/editProfile"); 
         setError("");
       }
       
@@ -77,10 +110,9 @@ const Login = () => {
       navigate("/");
       setError(err?.response?.data?.message);
     }
-
   }
+  
   //user click forgot pass:
-
   const forgotPassHandler = async()=>{
     setError("Sending OTP....");
     if (formData.emailId === "" || !formData.emailId.includes("@")) {
@@ -109,6 +141,7 @@ const Login = () => {
 
   //user reset pass :
   const resetPassHandler = async()=>{
+    setError("Check for OTP in Spam folder");
     if(!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
         formData.password)){
       setError("Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.");
@@ -155,7 +188,7 @@ const Login = () => {
         { withCredentials: true }
       );
       if (res.status === 200) {
-        toast.success("Check your email for the OTP.")
+        toast.success("Check your email for the OTP.{check spam folder for OTP}")
         setOtp(true);
         setError("");
       }
@@ -164,6 +197,7 @@ const Login = () => {
       setError(err?.response?.data?.message);
     }
   };
+  
   //user enter otp and verify it
   const handleOtp = async () => {
     if (/^\d{7}$/.test(formData.otp)) {
@@ -190,6 +224,7 @@ const Login = () => {
       setError(err?.response?.data?.message);
     }
   };
+  
   //user enter password and signup
   const handleSuccessfullSignup = async () => {
     if (
@@ -229,7 +264,6 @@ const Login = () => {
     }
   };
 
-
   return (
     <>
       <div className="absolute z-30 text-white w-[100%] top-[90px] opacity-97 pb-3">
@@ -255,14 +289,23 @@ const Login = () => {
                 placeholder="Enter your email Id"
               />
 
-              <input
-                className="mt-6 px-4 py-2  text-lg lg:text-xl md:text-xl w-full rounded-sm bg-black opacity-90 border-2 border-gray-700"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={formHandler}
-                placeholder="Enter your password"
-              />
+              <div className="relative">
+                <input
+                  className="mt-6 px-4 py-2 pr-12 text-lg lg:text-xl md:text-xl w-full rounded-sm bg-black opacity-90 border-2 border-gray-700"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={formHandler}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors mt-3"
+                >
+                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+              </div>
 
               <button className="mt-4  ">
                 Forgot password ?{" "}
@@ -289,9 +332,7 @@ const Login = () => {
           </form>
         )}
 
-
-
-        {/* frogot pass so enter email */}
+        {/* forgot pass so enter email */}
          {forgotPassOpt && !signup && !remDetails && !otp && (
           <form
             onSubmit={submitHandler}
@@ -319,7 +360,7 @@ const Login = () => {
               >
                 Verify Email
               </button>
-                            <p className="w-full text-center mt-4 font-bold text-xl">Or</p>
+              <p className="w-full text-center mt-4 font-bold text-xl">Or</p>
               <p
                 onClick={goBackHandler}
                 className="text-center rounded-md cursor-pointer px-4 py-2  text-lg lg:text-xl md:text-xl w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-purple-700 hover:to-pink-700 mt-3"
@@ -329,9 +370,6 @@ const Login = () => {
             </div>
           </form>
         )}
-
-
-
 
         {/* verify otp and update new password */}
         {resetPassOpt && !forgotPassOpt && !signup && !remDetails && !otp &&(
@@ -352,17 +390,26 @@ const Login = () => {
                 id="otp"
                 value={formData.otp}
                 onChange={formHandler}
-                placeholder="🔐 Enter the OTP sent to your email"
+                placeholder="🔐Enter the OTP sent to your email{Check Spam}"
               />      
-              <input
-                className="mt-6 px-4 py-2 text-[20px] w-full rounded-sm bg-black opacity-90 border-2 border-gray-700"
-                type="text"
-                name="password"
-                id="password"
-                value={formData.password}
-                onChange={formHandler}
-                placeholder="Enter a strong password"
-              />
+              <div className="relative">
+                <input
+                  className="mt-6 px-4 py-2 pr-12 text-[20px] w-full rounded-sm bg-black opacity-90 border-2 border-gray-700"
+                  type={showResetPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  value={formData.password}
+                  onChange={formHandler}
+                  placeholder="Enter a strong password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowResetPassword(!showResetPassword)}
+                  className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors mt-3"
+                >
+                  {showResetPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+              </div>
               <p className="mt-2 text-red-700">{error}</p>
               <button
                 onClick={resetPassHandler}
@@ -373,7 +420,7 @@ const Login = () => {
               </button>
               <p className="w-full text-center mt-4 font-bold text-xl">Or</p>
               <p
-                onClick={goBackHandler}
+                onClick={goBackHandler2}
                 className="text-center rounded-md cursor-pointer px-4 py-2  text-lg lg:text-xl md:text-xl w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-purple-700 hover:to-pink-700 mt-3"
               >
                 Go Back
@@ -381,9 +428,6 @@ const Login = () => {
             </div>
           </form>
         )}
-
-
-
 
         {/* signup for new user------------------------------------------- */}
         {signup && !remDetails && !otp && (
@@ -424,8 +468,6 @@ const Login = () => {
           </form>
         )}
 
-
-
         {/* enter and verify otp  */}
         {otp && !remDetails && (
           <form
@@ -465,8 +507,6 @@ const Login = () => {
           </form>
         )}
 
-
-
         {/* set password */}
         {remDetails && (
           <form
@@ -497,15 +537,24 @@ const Login = () => {
                 onChange={formHandler}
                 placeholder="Enter your Last name"
               />
-              <input
-                className="mt-6 px-4 py-2 text-[20px] w-full rounded-sm bg-black opacity-90 border-2 border-gray-700"
-                type="text"
-                name="password"
-                id="password"
-                value={formData.password}
-                onChange={formHandler}
-                placeholder="Enter a strong password"
-              />
+              <div className="relative">
+                <input
+                  className="mt-6 px-4 py-2 pr-12 text-[20px] w-full rounded-sm bg-black opacity-90 border-2 border-gray-700"
+                  type={showSignupPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  value={formData.password}
+                  onChange={formHandler}
+                  placeholder="Enter a strong password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowSignupPassword(!showSignupPassword)}
+                  className="cursor-pointer absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors mt-3"
+                >
+                  {showSignupPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+              </div>
              
               <p className="mt-2 text-red-700">{error}</p>
               <button
@@ -518,8 +567,6 @@ const Login = () => {
             </div>
           </form>
         )}
-
-
       </div>
     </>
   );

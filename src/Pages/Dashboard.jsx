@@ -3,6 +3,7 @@ import MainCard from "../Components/MainCard";
 import { BASE_URL } from "../Constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { useNotificationSocket } from "./SocketContext";
 import {
   addFeed,
   setFeedLoading,
@@ -10,25 +11,38 @@ import {
   setHasMore,
 } from "../Utils/feedSlice";
 import toast from "react-hot-toast";
-import ProfileCardShimmer from "../../ShimmerPages/ProfileCardShimmer";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const feed = useSelector((store) => store.feed);
+  const socket = useNotificationSocket(); 
+
+  useEffect(() => {
+
+    if (!socket) return;
+
+    const handleNotify = ({ fromUser, preview }) => {
+      console.log(`📩 (Dashboard) New message from ${fromUser}: ${preview}`);
+    };
+
+    socket.on("notifyMessage", handleNotify);
+
+    return () => {
+      socket.off("notifyMessage", handleNotify);
+    };
+  }, []);
 
   const getFeed = async () => {
     if (!feed.hasMore) return;
-
     dispatch(setFeedLoading(true));
     try {
-     if(!feed)
-       setLoading(true);
+      if (!feed) setLoading(true);
       const res = await axios.get(
-        `${BASE_URL}/user/feed?page=${feed.page}&limit=2`,
+        `${BASE_URL}/user/feed?page=${feed.page}&limit=8`,
         { withCredentials: true }
       );
-     
+
       dispatch(addFeed(res.data.data));
       dispatch(setHasMore(res.data.hasMore));
       dispatch(incrementPage());
@@ -41,13 +55,12 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    getFeed(); 
+    getFeed();
   }, []);
 
   return (
     <div className="w-full">
-      {/* {loading ? <ProfileCardShimmer/>: <MainCard getFeed={getFeed} />} */}
-      <MainCard getFeed={getFeed}/>
+      <MainCard getFeed={getFeed} />
     </div>
   );
 };
