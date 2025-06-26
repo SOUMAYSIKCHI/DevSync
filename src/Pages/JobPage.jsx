@@ -216,7 +216,7 @@ const JobPage = () => {
   const [currentJobIndex, setCurrentJobIndex] = useState(0);
   const dispatch = useDispatch();
   const fetchJobs = async () => {
-    if (!jobs) {
+    if (jobs.length===0) {
       try {
         const res = await axios.get(`${BASE_URL}/user/jobs`, {
           withCredentials: true,
