@@ -102,7 +102,7 @@ const Login = () => {
       if (res.status === 200) {
         dispatch(addUser(res.data.user));
         toast.success("Login success.")
-        navigate("/v1/editProfile"); 
+        navigate("/v1/jobs"); 
         setError("");
       }
       
