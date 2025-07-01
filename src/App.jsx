@@ -9,9 +9,14 @@ import EditProfile from "./Pages/EditProfile";
 import Connections from "./Pages/Connections";
 import Message from "./Pages/Message";
 import JobPage from "./Pages/JobPage";
+<<<<<<< HEAD
 import JobUpdate from "./adminPages/JobUpdate";
 
+=======
+import JobUpdate from "./adminPages/JobUpdate"
+>>>>>>> c013f9e (Added the skip functionality)
 
+// JobUpdate
 function App() {
   return (
     <Routes>

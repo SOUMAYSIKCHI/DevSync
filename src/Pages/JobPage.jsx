@@ -106,7 +106,7 @@ const JobCard = ({ job }) => {
                 </span>
               ))}
               {job.skillsRequired.length > 3 && (
-                <span className="px-2 py-0.5 bg-gray-600 text-white text-[10px] rounded-full text-[10px]">
+                <span className="px-2 py-0.5 bg-gray-600 text-white text-[10px] rounded-fu">
                   +{job.skillsRequired.length - 3}
                 </span>
               )}
