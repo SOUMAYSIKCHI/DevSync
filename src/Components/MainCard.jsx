@@ -9,6 +9,7 @@ import {
   Award,
   ChevronLeft,
   ChevronRight,
+  SkipForward,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFeed } from "../Utils/feedSlice";
@@ -22,6 +23,7 @@ const MainCard = ({ getFeed }) => {
   const dispatch = useDispatch();
 
   const [currentProfile, setCurrentProfile] = useState(users[0]);
+  const [showBlockConfirmation, setShowBlockConfirmation] = useState(false);
 
   useEffect(() => {
     if (users.length > 0) {
@@ -42,18 +44,22 @@ const MainCard = ({ getFeed }) => {
   };
 
   const handleSendRequest = async (status, userId) => {
-    try {
-      await axios.post(
-        `${BASE_URL}/request/send/${status}/${userId}`,
-        {},
-        { withCredentials: true }
-      );
-      removeProfile(userId);
-      toast.success(
-        status === "interested" ? "Connection Request Sent." : "Ignored!!"
-      );
-    } catch (error) {
-      toast.error("Issue in Backend. Please retry.");
+    if (status === "skip") {
+        removeProfile(userId);
+    } else {
+      try {
+        await axios.post(
+          `${BASE_URL}/request/send/${status}/${userId}`,
+          {},
+          { withCredentials: true }
+        );
+        removeProfile(userId);
+        toast.success(
+          status === "interested" ? "Connection Request Sent." : "Ignored!!"
+        );
+      } catch (error) {
+        toast.error("Issue in Backend. Please retry.");
+      }
     }
   };
 
@@ -122,16 +128,28 @@ const MainCard = ({ getFeed }) => {
 
   const handleAction = (action) => {
     if (!currentProfile) return;
-
-    if (action === "interested") {
+    if (action === "skip") {
+      animateSwipe("right");
+      handleSendRequest("skip", currentProfile._id);
+    } else if (action === "interested") {
       animateSwipe("right");
       handleSendRequest("interested", currentProfile._id);
     } else if (action === "ignored") {
-      animateSwipe("left");
-      handleSendRequest("ignored", currentProfile._id);
+      // Show confirmation modal instead of directly blocking
+      setShowBlockConfirmation(true);
     } else {
       switchToNextProfile();
     }
+  };
+
+  const handleBlockConfirm = () => {
+    animateSwipe("left");
+    handleSendRequest("ignored", currentProfile._id);
+    setShowBlockConfirmation(false);
+  };
+
+  const handleBlockCancel = () => {
+    setShowBlockConfirmation(false);
   };
 
   const getCardStyle = () => {
@@ -169,6 +187,39 @@ const MainCard = ({ getFeed }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center p-4">
+      {/* Block Confirmation Modal */}
+      {showBlockConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-2xl p-6 max-w-sm w-full border border-gray-700 shadow-2xl">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <X className="w-8 h-8 text-red-500" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Block User?
+              </h3>
+              <p className="text-gray-300 text-sm mb-6">
+                Do you want to surely block this user? This action will permanently block them, and no further requests can be sent to them.
+              </p>
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleBlockCancel}
+                  className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleBlockConfirm}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors font-medium"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Container */}
       <div className="w-full max-w-md bg-gray-800 rounded-3xl shadow-2xl overflow-hidden border border-gray-700">
         {/* Header */}
@@ -309,18 +360,18 @@ const MainCard = ({ getFeed }) => {
 
               {/* Like Button */}
               <button
-                onClick={() => handleAction("interested")}
-                className="w-14 h-14 cursor-pointer bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                onClick={() => handleAction("skip")}
+                className="w-14 h-14 cursor-pointer bg-gradient-to-r from-green-500 to-green-800  rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
-                <Heart className="w-6 h-6 text-white" />
-              </button>
+                <SkipForward className="w-6 h-6 text-white" />
+              </button> 
             </div>
 
             {/* Additional Action Buttons */}
             <div className="flex justify-center space-x-3 mt-4">
               <button
                 onClick={() => handleAction("interested")}
-                className="px-4 py-2 cursor-pointer bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-medium rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                className="px-4 py-2 cursor-pointer bg-gradient-to-r from-indigo-500 to-purple-800  text-white text-sm font-medium rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
               >
                 Send Request
               </button>
@@ -332,12 +383,12 @@ const MainCard = ({ getFeed }) => {
         <div className="bg-gray-900 px-6 py-3 border-t border-gray-700">
           <p className="text-xs text-gray-500 flex items-center">
             <X className="w-4 h-4 text-red-400 mr-2" />
-            The user will be permanently ignored, and no further requests can be
+            The user will be permanently blocked, and no further requests can be
             sent to them.
           </p>
           <p className="text-xs pt-2 text-gray-500 flex items-center">
-            <Heart className="w-4 h-4 text-white mr-2" />
-            It will send a connection request to the user.
+            <SkipForward className="w-4 h-4 text-white mr-2" />
+            It will skip the user.
           </p>
         </div>
       </div>
