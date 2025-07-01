@@ -9,7 +9,7 @@ import EditProfile from "./Pages/EditProfile";
 import Connections from "./Pages/Connections";
 import Message from "./Pages/Message";
 import JobPage from "./Pages/JobPage";
-import JobUpdate from "./adminPages/jobUpdate";
+import JobUpdate from "./adminPages/JobUpdate";
 
 
 function App() {
