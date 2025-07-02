@@ -56,11 +56,9 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             {/* Social Icons */}
             <div className="flex items-center space-x-4">
-              <a href="https://github.com/SOUMAYSIKCHI/" className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors group">
-                <Github className="w-5 h-5 text-gray-400 group-hover:text-white" />
-              </a>
+        
               
-              <a href="https://www.linkedin.com/in/soumaysikchi/" className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors group">
+              <a href="https://www.linkedin.com/company/devsyncindia/" className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors group">
                 <Linkedin className="w-5 h-5 text-gray-400 group-hover:text-blue-600" />
               </a>
               
