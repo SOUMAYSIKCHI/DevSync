@@ -19,15 +19,11 @@ const Dashboard = () => {
   const socket = useNotificationSocket(); 
 
   useEffect(() => {
-
     if (!socket) return;
-
     const handleNotify = ({ fromUser, preview }) => {
       console.log(`📩 (Dashboard) New message from ${fromUser}: ${preview}`);
     };
-
     socket.on("notifyMessage", handleNotify);
-
     return () => {
       socket.off("notifyMessage", handleNotify);
     };

@@ -23,6 +23,7 @@ import {
   Briefcase,
   Menu,
   X,
+  Home,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { addRequest } from "../Utils/RequestSlice";
@@ -88,6 +89,11 @@ const Navbar = () => {
   const handleJobsButton = () => {
     navigate("/v1/jobs");
   };
+
+  const handleHomeButton = () => {
+    navigate("/v1");
+  };
+
   const clearMessageButton = () => {
     dispatch(clearMsgNotification());
   };
@@ -285,6 +291,14 @@ const Navbar = () => {
                   </div>
                   <div className="py-2">
                     <button
+                      onClick={handleHomeButton}
+                      className="flex w-full cursor-pointer items-center space-x-3 px-4 py-2 text-gray-300 hover:bg-gray-700 transition-colors"
+                    >
+                      <Home className="w-4 h-4" />
+                      <span>Home</span>
+                    </button>
+
+                    <button
                       onClick={editProfHandler}
                       className="flex w-full cursor-pointer items-center space-x-3 px-4 py-2 text-gray-300 hover:bg-gray-700 transition-colors"
                     >
@@ -365,6 +379,17 @@ const Navbar = () => {
               </div>
 
               {/* Navigation Items */}
+              <button
+                onClick={() => {
+                  handleHomeButton();
+                  closeMobileMenu();
+                }}
+                className="flex w-full cursor-pointer items-center space-x-3 px-3 py-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                <Home className="w-5 h-5" />
+                <span>Home</span>
+              </button>
+
               <button
                 onClick={() => {
                   handleJobsButton();

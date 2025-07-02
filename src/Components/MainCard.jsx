@@ -204,13 +204,13 @@ const MainCard = ({ getFeed }) => {
               <div className="flex space-x-3">
                 <button
                   onClick={handleBlockCancel}
-                  className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors font-medium"
+                  className="flex-1 px-4 py-2 cursor-pointer bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleBlockConfirm}
-                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors font-medium"
+                  className="flex-1 px-4 py-2 cursor-pointer bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors font-medium"
                 >
                   Confirm
                 </button>

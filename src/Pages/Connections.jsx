@@ -29,19 +29,17 @@ const Connections = () => {
   const friends =  useSelector((state) => state.connections);
 
   const getReq = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/user/request/received`, {
+    try{
+      const res = await axios.get(`${BASE_URL}/user/request/received`, {
         withCredentials: true,
-        });
-        dispatch(addRequest(res.data));
-      } catch (error) {
+      });
+      dispatch(addRequest(res.data));
+      }catch(error){
         toast.error("Error fetching requests");
         console.error(error);
       }
   };
 
-
-  //get all the connections list ie friend list of me
   const getConnectionList = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/user/connections`, {
